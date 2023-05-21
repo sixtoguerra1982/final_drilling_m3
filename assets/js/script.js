@@ -1,75 +1,76 @@
-// Leer Valor de Propiedad CSS
-const getPropertyCss = (element, cssname) => {
-    let elementStyle = getComputedStyle(element)
-    let display = elementStyle.getPropertyValue(cssname)
-    return display
-}
+import {cardCharacter, spinner} from './view.js'
+import {getPropertyCss} from './util.js'
 
-// Funcion para crear Cards de forma dinamica
-const cardCharacter = (circleClass, title, content) => {
-    let card = `
-    <div class="m-2 efect">
-        <div class="card shadow">
-            <div class="card-body">
-                <div class="row align-items-start">
-                    <div class="col-5">    
-                        <div class="circle ${circleClass}"></div>
-                    </div>
-                    <div class="col-7">    
-                        <h5 class="card-title">${title}</h5>
-                        <p class="card-text">${content}</p>
-                    </div>                            
-                </div>
-            </div>
-        </div>
-    </div>
-    `
-    return card
-}
-
-// FUNCION QUE OBTIENE EL ENDPOINT DEL PERSONAJE
-const request = async(id) => {
+// FUNCION QUE OBTIENE DATOS DE PERSONAJE DESDE API ENDPOINT
+const request = async (id) => {
     const urlBase = `https://swapi.dev/api/people/${id}/`
     const response = await fetch(urlBase)
     const responseJson = await response.json()
     return responseJson
 }
 
+// CREA los personajes  DE FORMA ASINCRONA una vez obtenidos los datos de estos
+// recibe el elemento html padre de tarjeta a agregar, rango inicial, rango final, 
+// Clase de circulo para color de fondo
+// ****** ♥ ♥ ♥ ♥ ♥
+const activeCallAsync = async (element,initiate, end, circle) => {
 
+    //  Agregar promesas a un arreglo 
+    const promises = []
+    for (let i = initiate; i <= end ; i++){
+        promises.push(request(i))
+    }
+    console.log('promesas:', promises)
+    // Ejecutar promesas en paralelo
+    Promise.all(promises)
+        .then(results => {
+            console.log(results)
+            let x = 0
+            for (const response of results) {
+                x++
+                if (x == 1){
+                    element.innerHTML = cardCharacter(circle, response.name , `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`)
+                }else {
+                    element.innerHTML += cardCharacter(circle, response.name , `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`)
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error); // Manejo de errores
+        })
+}
+// ♥ ♥ ♥ ♥ ♥ ************************************ 
 
-// ************************************
-const activeCall = async (event) => {
-    let evento = event.currentTarget
-
+// accion o evento
+const activeCall = (event) => {
+    
+    //contenedor de personajes activar spinner
     let contentCharacters = document.getElementById('contentcharacters')
+    contentCharacters.innerHTML = spinner()
 
+    // Mostrar contenedor de Personajes
     if (getPropertyCss(contentCharacters,'display') === 'none'){
         contentCharacters.style.display = 'block'
     }
 
-    circle = evento.getElementsByClassName('circle')[0]
-   
+    // elemento padre que genero la accion
+    let evento = event.currentTarget
+    // Obtener la clase de elemento circulo
+    let circle = evento.getElementsByClassName('circle')[0].classList[1]
 
-    // PROMISE.ALL
-    let response = await request(1)
+    // valore en el front para guardar el rango de personajes (DATASET HTML)
+    let initiate = parseInt(evento.dataset.initiate)
+    let end = parseInt(evento.dataset.end)
 
-    contentCharacters.innerHTML = '' + cardCharacter(circle.classList[1], response.name , `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`)
+    activeCallAsync(contentCharacters, initiate, end, circle)
 
-
-    contentCharacters.innerHTML += cardCharacter(circle.classList[1], "Nombre" , "Datos")
-    contentCharacters.innerHTML += cardCharacter(circle.classList[1], "Nombre" , "Datos")
-    contentCharacters.innerHTML += cardCharacter(circle.classList[1], "Nombre" , "Datos")
-    contentCharacters.innerHTML += cardCharacter(circle.classList[1], "Nombre" , "Datos")
 }
-
-
 // CARGA INICIAL
 document.addEventListener('DOMContentLoaded', () => {
     // ACTIVAR EVENTOS
     const prompters = document.getElementsByClassName('prompter')
     for (let i = 0; i < prompters.length; i++) {
         let element = prompters[i]
-        element.addEventListener('mouseenter' , activeCall)
+        element.addEventListener('mouseenter' , activeCall) 
     }
-    console.log('request', request(1))
 })
