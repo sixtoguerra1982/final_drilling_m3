@@ -1,4 +1,4 @@
-import {request , activeCallAsync, activeView} from './heart.js'
+import {activeCallAsync, activeView} from './heart.js'
 // FUNCION GENERADORA
 function* generator(event){
     // activar spinner
@@ -13,6 +13,7 @@ function* generator(event){
     let end = parseInt(evento.dataset.end)
     let contentCharacters = document.getElementById('contentcharacters')
 
+    // LLAMADO A LA API y ACTUALIZAR DOM
     yield activeCallAsync(contentCharacters, initiate, end, circle)
 }
 

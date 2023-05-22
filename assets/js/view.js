@@ -1,4 +1,3 @@
-
 // Funcion para crear Cards de forma dinamica
 const cardCharacter = (circleClass, title, content) => {
     let card = `

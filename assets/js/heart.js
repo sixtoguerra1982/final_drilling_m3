@@ -40,7 +40,7 @@ const activeCallAsync = async (element,initiate, end, circle) => {
 }
 // ♥ ♥ ♥ ♥ ♥ ************************************ 
 
-// acctivar spinner
+// activar spinner
 const activeView = (event) => {
     //contenedor de personajes activar spinner
     let contentCharacters = document.getElementById('contentcharacters')
@@ -52,4 +52,4 @@ const activeView = (event) => {
     }
 }
 
-export {request,activeCallAsync, activeView}
+export {activeCallAsync, activeView}
