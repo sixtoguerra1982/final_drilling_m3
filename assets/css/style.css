@@ -28,3 +28,21 @@
         opacity:1;
     }
 }
+
+.line {
+    padding: 0;
+    grid-area: vertical_line;
+    border-left: 3px solid #979797;
+    min-height: 25vh;
+    display: flex;
+    align-items: center;
+  }
+  
+  .point {
+    position: relative;
+    left: -6.6px;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: #f19d0a;
+  }
