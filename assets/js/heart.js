@@ -27,10 +27,13 @@ const activeCallAsync = async (element,initiate, end, circle) => {
             let x = 0
             for (const response of results) {
                 x++
+                // destructuracion objeto response
+                let objectDestr = {name: response.name, content: `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`}
+
                 if (x == 1){
-                    element.innerHTML = cardCharacter(circle, response.name , `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`)
+                    element.innerHTML = cardCharacter(circle, objectDestr.name, objectDestr.content)
                 }else {
-                    element.innerHTML += cardCharacter(circle, response.name , `Estatura: ${response.height} cm. Peso: ${response.mass} kg.`)
+                    element.innerHTML += cardCharacter(circle, objectDestr.name, objectDestr.content)
                 }
             }
         })
